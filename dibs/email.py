@@ -37,8 +37,9 @@ Please note that DIBS only functions in web browsers that support JavaScript. DI
 
 Information about loan policies can be found at {info_page}
 
-We hope your experience with DIBS is a pleasant one. Don't hesitate to send us feedback, and please report any problems. You can do it directly via email to {sender} or using our anonymous feedback form at {feedback}
+We hope your experience with DIBS is a pleasant one. Don't hesitate to send us feedback, and please report any problems. You can do it directly via email to {sender}.
 '''
+#TODO: write a PR to put this in a "content-only" part of the code.
 
 
 # Exported functions.
