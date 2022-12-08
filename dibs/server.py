@@ -781,7 +781,7 @@ def loan_item(person):
         Loan.create(item = item, state = 'active', user = person.uname,
                     start_time = start, end_time = end, reloan_time = reloan)
 
-    send_email(person.uname, item, start, end, dibs.base_url)
+    # send_email(person.uname, item, start, end, dibs.base_url)
     log(f'redirecting {user(person)} to viewer page for new loan on {barcode}')
     redirect(f'{dibs.base_url}/view/{barcode}')
 
