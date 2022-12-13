@@ -95,7 +95,7 @@
                     %   problem_exists  = exists(join(process_dir, bc + "-problem"))
                     %
                     %   if problem_exists:
-                    <i title="A problem occurred with image processing. DLD has been notified."
+                    <i title="A problem occurred with image processing. The DLDC has been notified."
                        style="filter:drop-shadow(2px 2px 2px #eee); font-size: larger"
                        class="fas fa-exclamation-circle text-danger"></i>
                     %   elif initiated or processing:
