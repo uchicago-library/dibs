@@ -407,9 +407,9 @@ def update_item():
     # The HTML form validates the data types, but the POST might come from
     # elsewhere, so we always need to sanity-check the values.
     barcode = request.forms.get('barcode').strip()
-    if not barcode.isdigit():
-        return page('error', summary = 'invalid barcode',
-                    message = f'{barcode} is not a valid barcode')
+    # if not barcode.isdigit():
+    #     return page('error', summary = 'invalid barcode',
+    #                 message = f'{barcode} is not a valid barcode')
     duration = request.forms.get('duration').strip()
     if not duration.isdigit() or int(duration) <= 0:
         return page('error', summary = 'invalid duration',
