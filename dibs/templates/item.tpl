@@ -108,7 +108,9 @@
           <div class="loan-info mt-5 px-3">
             <p class="mx-auto text-center w-100 pt-3">
               <span id="available">This item is currently not available
-                to you for a digital loan.</span>
+                to you for a digital loan.</span><br>
+	      <span id="digital-loan-info"></span><br>
+	      <span id="replicate-physical"></span>
               <span id="explanation"></span>
               <span id="when"></span>
             </p>
@@ -162,6 +164,8 @@
            // Get handles to the elements we need to change on the page.
            let loanButton         = document.getElementById('loan-button'),
                availableElement   = document.getElementById('available'),
+	       loanInfoElement    = document.getElementById('digital-loan-info'),
+	       bookElement        = document.getElementById('replicate-physical'),
                explanationElement = document.getElementById('explanation'),
                whenElement        = document.getElementById('when'),
                refreshTip         = document.getElementById('refresh-tip'),
@@ -192,6 +196,8 @@
                loanButton.classList.remove('btn-secondary');
                availableElement.innerHTML = 'This item is available '
                                           + 'for a digital loan.';
+	       loanInfoElement.innerHTML = 'This is a digital loan of material protected by copyright law.';
+               bookElement.innerHTML = 'Digital loans replicate checking out a physical book. Only one person at a time can access the digital material in the same way that only one person at a time can use a single copy of a book.';
                explanationElement.innerHTML = '';
                whenElement.innerHTML = '';
              } else {
@@ -203,11 +209,11 @@
                loanButton.classList.add('btn-secondary');
                availableElement.innerHTML = 'This item is currently not available '
                                           + 'for a new digital loan.';
+               loanInfoElement.innerHTML = '';
                if (typeof explanation !== "undefined" && explanation !== null
                    && explanation !== "" && explanation != "None") {
                  explanationElement.innerHTML = explanation;
-               } else {
-                 log('explanation is undefined');
+               } else {                 log('explanation is undefined');
                  explanationElement.innerHTML = "";
                }
                if (typeof when_available !== "undefined" && when_available !== null
