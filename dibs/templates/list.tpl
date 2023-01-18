@@ -32,10 +32,10 @@
                    data-toggle="table" data-pagination="true" data-escape="false">
               <thead class="thead-light align-bottom align-text-bottom">
                 <tr>
-                  <th data-sortable="true" data-sorter="linkedNumberSort"
+                  <th data-sortable="true" 
                       data-field="barcode">&nbsp;<br>&nbsp;<br>Barcode</th>
 
-                  <th data-sortable="true" data-sorter="linkedTextSort"
+                  <th data-sortable="true" 
                       data-field="title">&nbsp;<br>&nbsp;<br>Title</th>
 
                   <th data-sortable="true" data-field="author">&nbsp;<br>&nbsp;<br>Author</th>
