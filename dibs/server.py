@@ -530,7 +530,12 @@ def start_processing():
 @dibs.post('/ready', apply = VerifyStaffUser())
 def toggle_ready():
     '''Set the ready-to-loan field.'''
+    # try:
+    #     barcode = json.loads(request.body.getvalue().decode('utf-8'))["barcode"]
+    # except KeyError:
+    #     barcode = ''
     barcode = request.POST.barcode.strip()
+    log(f'DLDC test log: POST is %s' % request.body.getvalue().decode('utf-8'))
     item = Item.get(Item.barcode == barcode)
     item.ready = not item.ready
     log(f'locking db to change {barcode} ready to {item.ready}')

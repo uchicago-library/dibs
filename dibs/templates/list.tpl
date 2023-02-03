@@ -11,6 +11,27 @@
     <script src="https://unpkg.com/bootstrap-table@1.18.2/dist/bootstrap-table.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js"></script>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.0/css/all.css">
+    <style>
+      .tooltip {
+	position: relative;
+	display: inline-block;
+	border-bottom: 1px dotted black;
+      }
+
+      .tooltip .tooltiptext {
+	visibility: hidden;
+	width: 120px;
+	background-color: black;
+	color: #fff;
+	text-align: center;
+	border-radius: 6px;
+	padding: 5px 0;
+
+	/* Position the tooltip */
+	position: absolute;
+	z-index: 1;
+      }
+    </style>
   </head>
 
   <body>
@@ -97,25 +118,26 @@
                     %   problem_exists  = exists(join(process_dir, bc + "-problem"))
                     %
                     %   if problem_exists:
-                    <i title="A problem occurred with image processing. The DLDC has been notified."
-                       style="filter:drop-shadow(2px 2px 2px #eee); font-size: larger"
-                       class="fas fa-exclamation-circle text-danger"></i>
+		    %     problem_message = ''
+		    %     with open(join(process_dir, bc + "-problem")) as file:
+		    %	    problem_message += file.read()
+		    %     end
+		    <i title="{{ problem_message }}"
+		       style="filter:drop-shadow(2px 2px 2px #eee); font-size: larger"
+		       class="fas fa-exclamation-circle text-danger"></i>
                     %   elif initiated or processing:
                     <i title="Item is being processed."
                        style="filter:drop-shadow(2px 2px 2px #eee); font-size: larger"
                        class="fas fa-hourglass-half text-secondary"></i>
                     %   elif manifest_exists:
-                    <form action="{{base_url}}/ready" method="POST">
-                      <input type="hidden" name="barcode" value="{{item.barcode}}">
-                      <input type="checkbox" class="checkbox"
-                             onChange="this.form.submit()"
-                             {{'checked="checked"' if item.ready else ''}}/>
-                    </form>
+		    <input type="checkbox" class="checkbox"
+			   onChange="httpPost('{{ base_url }}/ready',{{ item.barcode }})"
+			   {{'checked="checked"' if item.ready else ''}}/>
                     %   else:
                     <form action="{{base_url}}/start-processing" method="POST">
-                      <input type="hidden" name="barcode" value="{{item.barcode}}"/>
-                      <input type="submit" name="process" value="Process"
-                             class="btn btn-primary btn-sm"/>
+			<input type="hidden" name="barcode" value="{{item.barcode}}"/>
+			<input type="submit" name="process" value="Process"
+                               class="btn btn-primary btn-sm"/>
                     </form>
                     %   end
                     % else:
@@ -123,12 +145,9 @@
                     %   # missing file icon until the manifest appears.
                     %
                     %   if manifest_exists:
-                    <form action="{{base_url}}/ready" method="POST">
-                      <input type="hidden" name="barcode" value="{{item.barcode}}">
-                      <input type="checkbox" class="checkbox"
-                             onChange="this.form.submit()"
-                             {{'checked="checked"' if item.ready else ''}}/>
-                    </form>
+		    <input type="checkbox" class="checkbox"
+		    	   onChange="httpPost('{{ base_url }}/ready',{{ item.barcode }})"
+			   {{'checked="checked"' if item.ready else ''}}/>
                     %   else:
                     <span class="fa-stack fa-2x">
                       <i title="Manifest file is not available."
@@ -187,5 +206,11 @@
 
       % include('common/footer.tpl')
     </div>
+
+    <script>
+
+     const giraffe = logFunction;
+     console.log(Object.toString(httpPost));
+    </script>
   </body>
 </html>

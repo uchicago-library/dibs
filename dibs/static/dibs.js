@@ -129,3 +129,13 @@ function httpGet(url, contentType, callbackFn) {
     }
     xhr.send();
 };
+
+function httpPost(url, barcode) {
+    const params = "barcode=" + barcode;
+    const options = { method: 'POST',
+		      headers: {
+			  'Content-Type': 'application/x-www-form-urlencoded'
+		      },
+		      body: params };
+    fetch(url, options);
+}
