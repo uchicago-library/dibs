@@ -53,6 +53,11 @@ MANIFEST_DIR = data/manifests
 # the existence of the manifest file.
 PROCESS_DIR = data/processing
 
+# Directory containing scans yet to be processed.  Item listing
+# (dibs/templates/list.tpl) uses this to check whether the input scans
+# are present before activating the Process button.
+UNPROCESSED_SCANS_DIR = data/unprocessed/scans
+
 # Directory containing thumbnail images of book covers/jackets.  Images are
 # assumed to be in JPEG format and the files named "NNNNNN.jpg", where
 # "NNNNNN" is the barcode.  (Note: .jpg and not .jpeg.) DIBS attempts to

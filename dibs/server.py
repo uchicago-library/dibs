@@ -66,6 +66,9 @@ _MANIFEST_DIR = resolved_path(config('MANIFEST_DIR'))
 # Directory containing workflow processing status files.
 _PROCESS_DIR = resolved_path(config('PROCESS_DIR'))
 
+# Directory containing scans that dibsiiif.py has yet to process.
+_UNPROCESSED_SCANS_DIR = resolved_path(config('UNPROCESSED_SCANS_DIR'))
+
 # Directory containing thumbnail images of item covers/jackets.
 _THUMBNAILS_DIR = resolved_path(config('THUMBNAILS_DIR'))
 
@@ -368,8 +371,16 @@ def logout():
 @dibs.get('/list', apply = VerifyStaffUser())
 def list_items():
     '''Display the list of known items.'''
+    def please_copy(barcode):
+        fmt_string = ("Please copy TIFFs for barcode %s into the "
+                      "drop-off directory before hitting \"Process\".")
+        return fmt_string % barcode
     return page('list', browser_no_cache = True, items = Item.select(),
-                manifest_dir = _MANIFEST_DIR, process_dir = _PROCESS_DIR)
+                manifest_dir = _MANIFEST_DIR,
+                process_dir = _PROCESS_DIR,
+                please_copy = please_copy,
+                test = "test",
+                unprocessed_scans_dir = _UNPROCESSED_SCANS_DIR)
 
 
 @dibs.get('/manage', apply = VerifyStaffUser())

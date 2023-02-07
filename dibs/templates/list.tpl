@@ -101,7 +101,8 @@
                   <td class="text-center">
                     % bc = item.barcode
                     % manifest_exists = exists(join(manifest_dir, bc + "-manifest.json"))
-                    %
+		    % unprocessed_dir_exists = exists(join(unprocessed_scans_dir, bc))
+		    %
                     % if process_dir:
                     %   # Explanation of the logic governing the code below:
                     %   # if there's a *-problem file
@@ -131,13 +132,15 @@
                        class="fas fa-hourglass-half text-secondary"></i>
                     %   elif manifest_exists:
 		    <input type="checkbox" class="checkbox"
-			   onChange="httpPost('{{ base_url }}/ready',{{ item.barcode }})"
+			   onChange="httpPost('{{ base_url }}/ready',{{ bc }})"
 			   {{'checked="checked"' if item.ready else ''}}/>
                     %   else:
                     <form action="{{base_url}}/start-processing" method="POST">
-			<input type="hidden" name="barcode" value="{{item.barcode}}"/>
+			<input type="hidden" name="barcode" value="{{ bc }}"/>
 			<input type="submit" name="process" value="Process"
-                               class="btn btn-primary btn-sm"/>
+                               class="btn btn-primary btn-sm"
+			       title="{{ "" if unprocessed_dir_exists else please_copy(bc) }}"
+			       {{ "" if unprocessed_dir_exists else "disabled" }}/>
                     </form>
                     %   end
                     % else:
