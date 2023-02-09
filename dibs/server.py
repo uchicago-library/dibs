@@ -379,7 +379,6 @@ def list_items():
                 manifest_dir = _MANIFEST_DIR,
                 process_dir = _PROCESS_DIR,
                 please_copy = please_copy,
-                test = "test",
                 unprocessed_scans_dir = _UNPROCESSED_SCANS_DIR)
 
 
