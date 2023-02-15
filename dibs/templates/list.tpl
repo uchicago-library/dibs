@@ -127,7 +127,7 @@
 		    <!--    class="fas fa-exclamation-circle text-danger"></i> -->
 		    <button type="submit" name="try-again"
                            class="btn btn-danger btn-sm"
-			   onClick="deleteProblemFile(this,{{ bc }},'{{ base_url }}')"
+			   onClick="tryAgain(this,{{ bc }},'{{ base_url }}')"
 			    title="{{ problem_message }}">
 			Try Again
 		    </button>
@@ -154,7 +154,7 @@
                     %
                     %   if manifest_exists:
 		    <input type="checkbox" class="checkbox"
-		    	   onChange="httpPost('{{ base_url }}/ready',{ barcode:{{ bc }} })"
+		    	   onChange="toggleReady('{{ base_url }}', {{ bc }})"
 			   {{'checked="checked"' if item.ready else ''}}/>
                     %   else:
                     <span class="fa-stack fa-2x">
@@ -187,7 +187,7 @@
 
                   <td style="pl-1 pr-0">
                     <form action="{{base_url}}/edit/{{item.barcode}}" method="GET">
-                      <input type="hidden" name="barcode" value="{{item.barcode}}"/>n
+                      <input type="hidden" name="barcode" value="{{item.barcode}}"/>
                       <input type="submit" name="edit" value="Edit&nbsp;entry"
                              class="btn btn-info btn-sm"/>
                     </form>
@@ -227,19 +227,29 @@
       }
 
 
-      function deleteProblemFile (element, barcode, url) {
-	  dude.innerHTML = 'hey girl!';
+      function toggleReady(url, barcode) {
+	  const params = { 'barcode' : barcode };
+	  httpPost(url + '/ready', params);
+      }
+
+
+      function tryAgain(element, barcode, url) {
 	  const hourglass = document.createElement('i');
-	  hourglass.setAttribute('title', 'Item is being processed.');
-	  hourglass.setAttribute('style', 'filter:drop-shadow(2px 2px 2px #eee); font-side:larger');
-	  hourglass.setAttribute('class', 'fas fa-hourglass-half text-secondary');
+	  const hourglassStyle = 'filter:drop-shadow(2px 2px 2px #eee); font-side:larger';
+	  hourglass.setAttribute('title',
+				 'Item is being processed.');
+	  hourglass.setAttribute('style', hourglassStyle);
+	  hourglass.setAttribute('class',
+				 'fas fa-hourglass-half text-secondary');
 	  const redoAlert = document.createElement('div');
-	  redoAlert.setAttribute('class', 'alert alert-primary fixed-top');
+	  redoAlert.setAttribute('class',
+				 'alert alert-primary fixed-top');
 	  redoAlert.setAttribute('role', 'alert');
 	  redoAlert.innerHTML = "Attempting to re-process item " + barcode + "...";
 	  document.body.appendChild(redoAlert);
 	  element.replaceWith(hourglass);
-	  httpPost(url + '/try_again', barcode);	 
+	  const params = { 'filepath' : '/tmp/fake/file/path/testing' };
+	  httpPost(url + '/try_again', params);
      }
     </script>
   </body>

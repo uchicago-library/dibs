@@ -560,16 +560,14 @@ def toggle_ready():
             n = Loan.delete().where(Loan.item == item).execute()
             if n > 0:
                 log(f'deleted {n} loans for {barcode}')
-    redirect(f'{dibs.base_url}/list')
 
 
 @dibs.post('/try_again', apply = VerifyStaffUser())
 def try_again():
     '''Delete the *-processing file and re-create the *-initiated file.'''
-    barcode = request.POST.barcode.strip()
-    log('DLDC testing: try again with barcode ' + barcode)
-    pass
-
+    filepath = request.POST.filepath.strip()
+    log('DLDC testing: this function will delete -processing file at ' + filepath)
+    log('DLDC testing: this function will create -initiated file at ' + filepath)
 
 @dibs.post('/remove', apply = VerifyStaffUser())
 def remove_item():
