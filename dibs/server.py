@@ -106,7 +106,7 @@ _IIIF_CACHE = LRU(int(config('IIIF_CACHE_SIZE')))
 
 
 # General-purpose utilities used repeatedly.
-# .............................................................................
+# ............................................................................
 
 def page(name, **kargs):
     '''Create a page using template "name" with some standard variables set.'''
@@ -540,10 +540,6 @@ def start_processing():
 @dibs.post('/ready', apply = VerifyStaffUser())
 def toggle_ready():
     '''Set the ready-to-loan field.'''
-    # try:
-    #     barcode = json.loads(request.body.getvalue().decode('utf-8'))["barcode"]
-    # except KeyError:
-    #     barcode = ''
     barcode = request.POST.barcode.strip()
     log(f'DLDC test log: POST is %s' % request.body.getvalue().decode('utf-8'))
     item = Item.get(Item.barcode == barcode)
@@ -565,6 +561,14 @@ def toggle_ready():
             if n > 0:
                 log(f'deleted {n} loans for {barcode}')
     redirect(f'{dibs.base_url}/list')
+
+
+@dibs.post('/try_again', apply = VerifyStaffUser())
+def try_again():
+    '''Delete the *-processing file and re-create the *-initiated file.'''
+    barcode = request.POST.barcode.strip()
+    log('DLDC testing: try again with barcode ' + barcode)
+    pass
 
 
 @dibs.post('/remove', apply = VerifyStaffUser())

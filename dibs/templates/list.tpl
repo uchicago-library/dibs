@@ -107,7 +107,7 @@
                     %   # Explanation of the logic governing the code below:
                     %   # if there's a *-problem file
                     %   #    show the icon for a problem
-                    %   # else, if there's a *-processing or *-initiated file
+                    %   # else, if there's a *-ing or *-initiated file
                     %   #    show the icon for processing
                     %   # else, if there's a manifest
                     %   #    show the availability checkbox
@@ -119,20 +119,25 @@
                     %   problem_exists  = exists(join(process_dir, bc + "-problem"))
                     %
                     %   if problem_exists:
-		    %     problem_message = ''
+		    %     problem_message = 'There was a problem uploading the TIFFs.\n\n'
 		    %     with open(join(process_dir, bc + "-problem")) as file:
 		    %	    problem_message += file.read()
 		    %     end
-		    <i title="{{ problem_message }}"
-		       style="filter:drop-shadow(2px 2px 2px #eee); font-size: larger"
-		       class="fas fa-exclamation-circle text-danger"></i>
+		    <!-- <i style="filter:drop-shadow(2px 2px 2px #eee); font-size: larger" -->
+		    <!--    class="fas fa-exclamation-circle text-danger"></i> -->
+		    <button type="submit" name="try-again"
+                           class="btn btn-danger btn-sm"
+			   onClick="deleteProblemFile(this,{{ bc }},'{{ base_url }}')"
+			    title="{{ problem_message }}">
+			Try Again
+		    </button>
                     %   elif initiated or processing:
                     <i title="Item is being processed."
                        style="filter:drop-shadow(2px 2px 2px #eee); font-size: larger"
                        class="fas fa-hourglass-half text-secondary"></i>
                     %   elif manifest_exists:
 		    <input type="checkbox" class="checkbox"
-			   onChange="httpPost('{{ base_url }}/ready',{{ bc }})"
+			   onChange="httpPost('{{ base_url }}/ready',{ barcode:{{ bc }} })"
 			   {{'checked="checked"' if item.ready else ''}}/>
                     %   else:
                     <form action="{{base_url}}/start-processing" method="POST">
@@ -149,7 +154,7 @@
                     %
                     %   if manifest_exists:
 		    <input type="checkbox" class="checkbox"
-		    	   onChange="httpPost('{{ base_url }}/ready',{{ item.barcode }})"
+		    	   onChange="httpPost('{{ base_url }}/ready',{ barcode:{{ bc }} })"
 			   {{'checked="checked"' if item.ready else ''}}/>
                     %   else:
                     <span class="fa-stack fa-2x">
@@ -182,7 +187,7 @@
 
                   <td style="pl-1 pr-0">
                     <form action="{{base_url}}/edit/{{item.barcode}}" method="GET">
-                      <input type="hidden" name="barcode" value="{{item.barcode}}"/>
+                      <input type="hidden" name="barcode" value="{{item.barcode}}"/>n
                       <input type="submit" name="edit" value="Edit&nbsp;entry"
                              class="btn btn-info btn-sm"/>
                     </form>
@@ -211,9 +216,31 @@
     </div>
 
     <script>
+      function httpPost(url, paramsObj) {
+	  const params = new URLSearchParams(paramsObj).toString();
+	  const options = { method: 'POST',
+			    headers: {
+				'Content-Type': 'application/x-www-form-urlencoded'
+			    },
+			    body: params };
+	  fetch(url, options);
+      }
 
-     const giraffe = logFunction;
-     console.log(Object.toString(httpPost));
+
+      function deleteProblemFile (element, barcode, url) {
+	  dude.innerHTML = 'hey girl!';
+	  const hourglass = document.createElement('i');
+	  hourglass.setAttribute('title', 'Item is being processed.');
+	  hourglass.setAttribute('style', 'filter:drop-shadow(2px 2px 2px #eee); font-side:larger');
+	  hourglass.setAttribute('class', 'fas fa-hourglass-half text-secondary');
+	  const redoAlert = document.createElement('div');
+	  redoAlert.setAttribute('class', 'alert alert-primary fixed-top');
+	  redoAlert.setAttribute('role', 'alert');
+	  redoAlert.innerHTML = "Attempting to re-process item " + barcode + "...";
+	  document.body.appendChild(redoAlert);
+	  element.replaceWith(hourglass);
+	  httpPost(url + '/try_again', barcode);	 
+     }
     </script>
   </body>
 </html>
