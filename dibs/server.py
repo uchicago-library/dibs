@@ -534,7 +534,7 @@ def start_processing():
             log(f'problem creating {init_file}: {str(ex)}')
     else:
         log(f'_PROCESS_DIR not set -- ignoring /start-processing for {barcode}')
-    redirect(f'{dibs.base_url}/list')
+    # redirect(f'{dibs.base_url}/list')
 
 
 @dibs.post('/ready', apply = VerifyStaffUser())
@@ -565,9 +565,21 @@ def toggle_ready():
 @dibs.post('/try_again', apply = VerifyStaffUser())
 def try_again():
     '''Delete the *-processing file and re-create the *-initiated file.'''
-    filepath = request.POST.filepath.strip()
-    log('DLDC testing: this function will delete -processing file at ' + filepath)
-    log('DLDC testing: this function will create -initiated file at ' + filepath)
+    barcode = request.POST.barcode.strip()
+    if _PROCESS_DIR:
+        problem_path = join(_PROCESS_DIR, barcode + "-problem")
+        processing_path = join(_PROCESS_DIR, barcode + "-processing")
+        try:
+            os.remove(problem_path)
+            log(f'deleting problem file at: ' + problem_path)
+            os.remove(processing_path)
+            log(f'deleting processing file at: ' + processing_path)
+        except FileNotFoundError:
+            log('no processing file to delete!')
+        decorate = dibs.post('/ready', apply = VerifyStaffUser ())
+        decorate(start_processing())
+    else:
+        log(f'_PROCESS_DIR not set -- ignoring /try_again for {barcode}')
 
 @dibs.post('/remove', apply = VerifyStaffUser())
 def remove_item():

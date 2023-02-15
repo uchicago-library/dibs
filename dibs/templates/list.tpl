@@ -137,16 +137,23 @@
                        class="fas fa-hourglass-half text-secondary"></i>
                     %   elif manifest_exists:
 		    <input type="checkbox" class="checkbox"
-			   onChange="httpPost('{{ base_url }}/ready',{ barcode:{{ bc }} })"
+			   onChange="toggleReady('{{ base_url }}', {{ bc }})"
 			   {{'checked="checked"' if item.ready else ''}}/>
                     %   else:
-                    <form action="{{base_url}}/start-processing" method="POST">
-			<input type="hidden" name="barcode" value="{{ bc }}"/>
-			<input type="submit" name="process" value="Process"
-                               class="btn btn-primary btn-sm"
-			       title="{{ "" if unprocessed_dir_exists else please_copy(bc) }}"
-			       {{ "" if unprocessed_dir_exists else "disabled" }}/>
-                    </form>
+                    <!-- <form action="{{base_url}}/start-processing" method="POST"> -->
+		    <!-- 	<input type="hidden" name="barcode" value="{{ bc }}"/> -->
+		    <!-- 	<input type="submit" name="process" value="Process" -->
+                    <!--            class="btn btn-primary btn-sm" -->
+		    <!-- 	       title="{{ "" if unprocessed_dir_exists else please_copy(bc) }}" -->
+		    <!-- 	       {{ "" if unprocessed_dir_exists else "disabled" }}/> -->
+                    <!-- </form> -->
+		    <button type="button"
+			    class="btn btn-primary btn-sm"
+			    title="{{ "" if unprocessed_dir_exists else please_copy(bc) }}"
+			    onclick="processItem(this,{{ bc }},'{{ base_url }}')"
+			    {{ "" if unprocessed_dir_exists else "disabled" }}/>
+		    Process
+		    </button>
                     %   end
                     % else:
                     %   # If the process dir scheme is not being used, show a
@@ -177,7 +184,7 @@
 
                   <td class="pl-1 pr-0 mr-0">
                     <button id="copyBtn" type="button" class="btn btn-secondary btn-sm"
-                            onclick="copyToClipboard(this, '{{base_url}}/item/{{item.barcode}}');"
+			    onclick="copyToClipboard(this, '{{base_url}}/item/{{item.barcode}}');"
                             % if not manifest_exists:
                             disabled
                             % end
@@ -226,29 +233,54 @@
 	  fetch(url, options);
       }
 
+      function clearAlert() {
+	  const alertDiv = document.getElementById("dibs_alert");
+	  if (alertDiv) {
+	      alertDiv.remove();
+	  }
+      };
+
+      function drawAlert(contents) {
+	  // only one Bootstrap alert at a time
+	  clearAlert();
+	  const alertDiv = document.createElement('div');
+	  alertDiv.id = "dibs_alert";
+	  alertDiv.setAttribute('class',
+				 'alert alert-primary fixed-top');
+	  alertDiv.setAttribute('role', 'alert');
+	  alertDiv.innerHTML = contents;
+	  document.body.appendChild(alertDiv);
+      }
 
       function toggleReady(url, barcode) {
 	  const params = { 'barcode' : barcode };
 	  httpPost(url + '/ready', params);
       }
 
-
-      function tryAgain(element, barcode, url) {
+      function hourglassify(element) {
 	  const hourglass = document.createElement('i');
-	  const hourglassStyle = 'filter:drop-shadow(2px 2px 2px #eee); font-side:larger';
+	  const hourglassStyle = 'filter:drop-shadow(2px 2px 2px #eee); font-size:larger';
 	  hourglass.setAttribute('title',
 				 'Item is being processed.');
 	  hourglass.setAttribute('style', hourglassStyle);
 	  hourglass.setAttribute('class',
 				 'fas fa-hourglass-half text-secondary');
-	  const redoAlert = document.createElement('div');
-	  redoAlert.setAttribute('class',
-				 'alert alert-primary fixed-top');
-	  redoAlert.setAttribute('role', 'alert');
-	  redoAlert.innerHTML = "Attempting to re-process item " + barcode + "...";
-	  document.body.appendChild(redoAlert);
 	  element.replaceWith(hourglass);
-	  const params = { 'filepath' : '/tmp/fake/file/path/testing' };
+      }
+
+      function processItem(element, barcode, url) {
+	  hourglassify(element);
+	  const alertMessage = "Processing item " + barcode + "...";
+	  drawAlert(alertMessage);
+	  const params = { 'barcode' : barcode }
+	  httpPost(url + '/start-processing', params);
+      }
+
+      function tryAgain(element, barcode, url) {
+	  hourglassify(element);
+	  const alertMessage = "Attempting to re-process item " + barcode + "...";
+	  drawAlert(alertMessage);
+	  const params = { 'barcode' : barcode };
 	  httpPost(url + '/try_again', params);
      }
     </script>
