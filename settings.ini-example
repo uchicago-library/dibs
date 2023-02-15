@@ -96,6 +96,10 @@ FEEDBACK_URL =
 # every page (it's link for "Help").
 HELP_URL = https://caltechlibrary.github.io/dibs/usage.html
 
+# Local path to your institutions Google Analytics 4.0 Javascript
+# snippet template
+GOOGLE_ANALYTICS =
+
 # The following run mode options are recognized:
 #   "normal":  use adapter.wsgi without special options
 #   "verbose": use adapter.wsgi with verbose logging options

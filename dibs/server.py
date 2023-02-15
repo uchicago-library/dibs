@@ -91,6 +91,9 @@ _FEEDBACK_URL = config('FEEDBACK_URL')
 # page, which is assumed to exist even if individual sites don't provide docs.
 _HELP_URL = config('HELP_URL', default = 'https://caltechlibrary.github.io/dibs')
 
+# Local path to your institutions custom Google Analytics code
+_GOOGLE_ANALYTICS = config('GOOGLE_ANALYTICS')
+
 # If there's a site announcement file, this will be its path.
 _SITE_ANNOUNCEMENT_FILE = join(_SERVER_ROOT, 'site-announcement.html')
 
@@ -756,7 +759,9 @@ def show_item_info(barcode, person):
     return page('item', browser_no_cache = True, item = item,
                 available = (status == Status.AVAILABLE),
                 when_available = human_datetime(when_available),
-                explanation = explanation, thumbnails_dir = _THUMBNAILS_DIR)
+                explanation = explanation,
+                thumbnails_dir = _THUMBNAILS_DIR,
+                google_analytics = _GOOGLE_ANALYTICS)
 
 
 @dibs.post('/loan', apply = AddPersonArgument())

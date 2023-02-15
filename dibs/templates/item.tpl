@@ -29,6 +29,9 @@
        }
      });
     </script>
+    % if google_analytics:
+    %   include(google_analytics)
+    % end
   </head>
   
   <body>
