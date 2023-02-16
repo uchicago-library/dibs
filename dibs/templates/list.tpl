@@ -47,19 +47,29 @@
           Click on the column titles to sort the table by that column.
         </p>
         <div class="d-grid gap-3">
+	    <div class="mx-auto w-50 text-center">
+		<a href="{{base_url}}/add"
+		   class="btn btn-primary m-0 mr-2 my-2 no-underline">
+		    Add new item
+		</a>
+		<a href="{{base_url}}/manage"
+		   class="btn btn-danger m-0 mr-2 my-2 no-underline">
+		    Manage item list
+		</a>
+            </div>
+	    
           <div class="mb-3 table-responsive">
             <table class="table table-borderless"
                    data-page-size="50"
                    data-toggle="table"
 		   data-search="true"
+		   data-sort-name="barcode"
 		   data-search-align="left" data-pagination="true" data-escape="false">
               <thead class="thead-light align-bottom align-text-bottom">
                 <tr>
-                  <th data-sortable="true" 
-                      data-field="barcode">&nbsp;<br>&nbsp;<br>Barcode</th>
+                  <th data-sortable="true" data-field="barcode">&nbsp;<br>&nbsp;<br>Barcode</th>
 
-                  <th data-sortable="true" 
-                      data-field="title">&nbsp;<br>&nbsp;<br>Title</th>
+                  <th data-sortable="true" data-field="title">&nbsp;<br>&nbsp;<br>Title</th>
 
                   <th data-sortable="true" data-field="author">&nbsp;<br>&nbsp;<br>Author</th>
 
@@ -91,7 +101,8 @@
                   </td>
 
                   <td>
-                    <a href="{{base_url}}/item/{{item.barcode}}">{{item.title}}</a>
+		      <div hidden>{{item.title}}</div>
+                      <a href="{{base_url}}/item/{{item.barcode}}">{{item.title}}</a>
                   </td>
 
                   <td>
@@ -123,8 +134,6 @@
 		    %     with open(join(process_dir, bc + "-problem")) as file:
 		    %	    problem_message += file.read()
 		    %     end
-		    <!-- <i style="filter:drop-shadow(2px 2px 2px #eee); font-size: larger" -->
-		    <!--    class="fas fa-exclamation-circle text-danger"></i> -->
 		    <button type="submit" name="try-again"
                            class="btn btn-danger btn-sm"
 			   onClick="processItem(this,{{ bc }},'{{ base_url }}','/try_again')"
@@ -140,13 +149,6 @@
 			   onChange="toggleReady('{{ base_url }}', {{ bc }})"
 			   {{'checked="checked"' if item.ready else ''}}/>
                     %   else:
-                    <!-- <form action="{{base_url}}/start-processing" method="POST"> -->
-		    <!-- 	<input type="hidden" name="barcode" value="{{ bc }}"/> -->
-		    <!-- 	<input type="submit" name="process" value="Process" -->
-                    <!--            class="btn btn-primary btn-sm" -->
-		    <!-- 	       title="{{ "" if unprocessed_dir_exists else please_copy(bc) }}" -->
-		    <!-- 	       {{ "" if unprocessed_dir_exists else "disabled" }}/> -->
-                    <!-- </form> -->
 		    <button type="button"
 			    class="btn btn-primary btn-sm"
 			    title="{{ "" if unprocessed_dir_exists else please_copy(bc) }}"

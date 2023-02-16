@@ -48,13 +48,20 @@
                 <label for="barcode" class="col-form-label">
                   Barcode:
                 </label>
-                <input name="barcode" class="form-control"
+                <input id="barcodeField" name="barcode" class="form-control"
                        placeholder="Barcode number"
                        %if item:
                        value="{{item.barcode}}"
                        %end
                        required autofocus>
               </div>
+	      <script>
+	       const bfield = document.getElementById('barcodeField');
+	       bfield.addEventListener('blur', (event) => {
+		   const bc = bfield.value;
+		   alert(bc);
+	       });
+	      </script>
 
               <div class="form-group row col-12">
                 <label for="duration" class="col-form-label">
@@ -128,14 +135,14 @@
           </div>
 
           <div class="py-4">
-            <div class="btn-toolbar mx-auto" style="width: 240px;">
+            <div class="btn-toolbar mx-auto" style="width: 450px;">
               <!-- fake input element, to set default action for enter key -->
               <input name="default" value="" type="submit"
                      style="width: 0; height: 0; padding: 0; margin: 0; outline: none; border: 0" />
               <button class="btn btn-secondary mx-2" style="width: 100px; height: 2.5em"
                       name="cancel" value="Cancel" type="submit"
                       formnovalidate>Cancel</button>
-              <button id="btnAdd" class="btn btn-primary mx-2" style="width: 100px"
+              <button id="btnAdd" class="btn btn-info mx-2" style="width: 100px"
                       name="add" type="submit">
                       %if item:
                       Save
@@ -143,6 +150,12 @@
                       Add
                       %end
               </button>
+	      %if not item:
+              <button id="btnAddAndProcess" class="btn btn-primary mx-2" style="width: 160px"
+                      name="addAndProcess" type="submit">
+                      Add & Process
+              </button>
+	      %end
             </div>
           </div>
         </form>
