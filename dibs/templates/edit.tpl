@@ -136,7 +136,7 @@
           </div>
 
           <div class="py-4">
-            <div class="btn-toolbar mx-auto" style="width: 450px;">
+            <div class="btn-toolbar mx-auto" style="width: {{ '240px' if item else '450px' }};">
               <!-- fake input element, to set default action for enter key -->
               <input name="default" value="" type="submit"
                      style="width: 0; height: 0; padding: 0; margin: 0; outline: none; border: 0" />
