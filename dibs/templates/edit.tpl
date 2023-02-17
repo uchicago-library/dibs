@@ -59,10 +59,11 @@
 	       const bfield = document.getElementById('barcodeField');
 	       bfield.addEventListener('blur', (event) => {
 		   const bc = bfield.value;
-		   alert(bc);
+		   const url = "{{ base_url }}" + "/check_for_barcode";
+		   check_barcode(url, bc);
 	       });
 	      </script>
-
+	      
               <div class="form-group row col-12">
                 <label for="duration" class="col-form-label">
                   Loan duration (in hours):
@@ -152,7 +153,7 @@
               </button>
 	      %if not item:
               <button id="btnAddAndProcess" class="btn btn-primary mx-2" style="width: 160px"
-                      name="addAndProcess" type="submit">
+                      name="addAndProcess" type="submit" disabled>
                       Add & Process
               </button>
 	      %end

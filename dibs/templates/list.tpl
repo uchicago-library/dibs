@@ -112,7 +112,14 @@
                   <td class="text-center">
                     % bc = item.barcode
                     % manifest_exists = exists(join(manifest_dir, bc + "-manifest.json"))
-		    % unprocessed_dir_exists = exists(join(unprocessed_scans_dir, bc))
+		    %
+		    % if unprocessed_scans_dir:
+		    %   unprocessed_dir_exists = exists(join(unprocessed_scans_dir, bc))
+		    % else:
+		    %   # only check for barcode directory if unprocessed_scans_dir
+		    %   # config option is set
+		    %   unprocessed_dir_exists = True
+		    % end
 		    %
                     % if process_dir:
                     %   # Explanation of the logic governing the code below:
@@ -130,7 +137,7 @@
                     %   problem_exists  = exists(join(process_dir, bc + "-problem"))
                     %
                     %   if problem_exists:
-		    %     problem_message = 'There was a problem uploading the TIFFs.\n\n'
+		    %     problem_message = 'There was a problem processing the TIFFs.\n\n'
 		    %     with open(join(process_dir, bc + "-problem")) as file:
 		    %	    problem_message += file.read()
 		    %     end
@@ -225,62 +232,6 @@
     </div>
 
     <script>
-     function httpPost(url, paramsObj) {
-	 const params = new URLSearchParams(paramsObj).toString();
-	 const options = { method: 'POST',
-			   headers: {
-			       'Content-Type': 'application/x-www-form-urlencoded'
-			   },
-			   body: params };
-	 fetch(url, options);
-     }
-
-     function clearAlert() {
-	 const alertDiv = document.getElementById("dibs_alert");
-	 if (alertDiv) {
-	     alertDiv.remove();
-	 }
-     };
-
-     function drawAlert(contents) {
-	 // only one Bootstrap alert at a time
-	 clearAlert();
-	 const alertDiv = document.createElement('div');
-	 alertDiv.id = "dibs_alert";
-	 alertDiv.setAttribute('class',
-			       'alert alert-primary fixed-top');
-	 alertDiv.setAttribute('role', 'alert');
-	 alertDiv.innerHTML = contents;
-	 document.body.appendChild(alertDiv);
-     }
-
-     function toggleReady(url, barcode) {
-	 const params = { 'barcode' : barcode };
-	 httpPost(url + '/ready', params);
-     }
-
-     function hourglassify(element) {
-	 const hourglass = document.createElement('i');
-	 const hourglassStyle = ('filter:drop-shadow(2px 2px 2px #eee); ' +
-				 'font-size:larger');
-	 hourglass.setAttribute('title',
-				'Item is being processed.');
-	 hourglass.setAttribute('style', hourglassStyle);
-	 hourglass.setAttribute('class',
-				'fas fa-hourglass-half text-secondary');
-	 element.replaceWith(hourglass);
-     }
-
-     function processItem(element, barcode, base_url, route) {
-	 hourglassify(element);
-	 const alertMessage = ("Processing item " +
-			       barcode +
-			       ".  " +
-			       "Refresh the page in 1-2 minutes to see the result.");
-	 drawAlert(alertMessage);
-	 const params = { 'barcode' : barcode }
-	 httpPost(base_url + route, params);
-	 }
 
     </script>
   </body>

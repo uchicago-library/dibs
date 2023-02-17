@@ -448,6 +448,10 @@ def update_item():
                         item_id = rec.item_id, item_page = rec.item_page, year = rec.year,
                         edition = rec.edition, publisher = rec.publisher,
                         num_copies = num_copies, duration = duration, notes = notes)
+            if 'addAndProcess' in request.POST: # user clicked "add then process" button
+                log(f'user clicked Add & Process')
+                decorate = dibs.post('/start-processing', apply = VerifyStaffUser ())
+                decorate(start_processing())
         else:  # The operation is /update/edit.
             if not item:
                 log(f'there is no item with barcode {barcode}')
@@ -537,7 +541,6 @@ def start_processing():
             log(f'problem creating {init_file}: {str(ex)}')
     else:
         log(f'_PROCESS_DIR not set -- ignoring /start-processing for {barcode}')
-    # redirect(f'{dibs.base_url}/list')
 
 
 @dibs.post('/ready', apply = VerifyStaffUser())
@@ -579,10 +582,24 @@ def try_again():
             log(f'deleting processing file at: ' + processing_path)
         except FileNotFoundError:
             log('no processing file to delete!')
-        decorate = dibs.post('/ready', apply = VerifyStaffUser ())
+        decorate = dibs.post('/start-processing', apply = VerifyStaffUser ())
         decorate(start_processing())
     else:
         log(f'_PROCESS_DIR not set -- ignoring /try_again for {barcode}')
+
+@dibs.post('/check_for_barcode', apply = VerifyStaffUser())
+def check_for_barcode():
+    '''Check the dibs_dropoff directory for the relevant barcode.'''
+    def validate(bc):
+        return bc.isalnum() and len(bc) < 15
+    barcode = request.POST.barcode.strip("\'")
+    unprocessed_dir_exists = exists(join(_UNPROCESSED_SCANS_DIR, barcode))
+    button_is_ok = (not _UNPROCESSED_SCANS_DIR) or unprocessed_dir_exists
+    barcode_is_ok = validate(barcode)
+    if button_is_ok and barcode_is_ok:
+        return LocalResponse(body="found")
+    else:
+        return LocalResponse(body="not found")
 
 @dibs.post('/remove', apply = VerifyStaffUser())
 def remove_item():

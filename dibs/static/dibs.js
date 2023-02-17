@@ -130,12 +130,82 @@ function httpGet(url, contentType, callbackFn) {
     xhr.send();
 };
 
-function httpPost(url, barcode) {
-    const params = "barcode=" + barcode;
+
+function httpPost(url, paramsObj) {
+    const params = new URLSearchParams(paramsObj).toString();
     const options = { method: 'POST',
 		      headers: {
 			  'Content-Type': 'application/x-www-form-urlencoded'
 		      },
 		      body: params };
     fetch(url, options);
+}
+
+function update_button(result) {
+    // note: button id is hardcoded
+    const button = document.getElementById('btnAddAndProcess');
+    if (result === "not found") {
+	button.disabled = true;
+    } else {
+	button.disabled = false;
+    }
+}
+
+function check_barcode(url, barcode) {
+    const params = "barcode=\'" + barcode + "\'"
+    const options = { method: 'POST',
+		      headers: {
+			  'Content-Type': 'application/x-www-form-urlencoded'
+		      },
+		      body: params };
+    fetch(url, options).then(
+	response => response.text().then(
+	    contents => update_button(contents)));
+}
+
+function clearAlert() {
+    const alertDiv = document.getElementById("dibs_alert");
+    if (alertDiv) {
+	alertDiv.remove();
+    }
+};
+
+function drawAlert(contents) {
+    // only one Bootstrap alert at a time
+    clearAlert();
+    const alertDiv = document.createElement('div');
+    alertDiv.id = "dibs_alert";
+    alertDiv.setAttribute('class',
+			  'alert alert-primary fixed-top');
+    alertDiv.setAttribute('role', 'alert');
+    alertDiv.innerHTML = contents;
+    document.body.appendChild(alertDiv);
+}
+
+function toggleReady(url, barcode) {
+    const params = { 'barcode' : barcode };
+    httpPost(url + '/ready', params);
+}
+
+function hourglassify(element) {
+    const hourglass = document.createElement('i');
+    const hourglassStyle = ('filter:drop-shadow(2px 2px 2px #eee); ' +
+			    'font-size:larger');
+    hourglass.setAttribute('title',
+			   'Item is being processed.');
+    hourglass.setAttribute('style', hourglassStyle);
+    hourglass.setAttribute('class',
+			   'fas fa-hourglass-half text-secondary');
+    element.replaceWith(hourglass);
+}
+
+function processItem(element, barcode, base_url, route) {
+    hourglassify(element);
+    const alertMessage = ("Processing item " +
+			  barcode +
+			  ".  " +
+			  "Refresh the page in 1-2 minutes to see the result.");
+    drawAlert(alertMessage);
+    const params = { 'barcode' : barcode }
+    httpPost(base_url + route, params);
 }
