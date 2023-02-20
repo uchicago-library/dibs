@@ -153,7 +153,7 @@
                        class="fas fa-hourglass-half text-secondary"></i>
                     %   elif manifest_exists:
 		    <input type="checkbox" class="checkbox"
-			   onChange="toggleReady('{{ base_url }}', {{ bc }})"
+			   onChange="toggleReady('{{ base_url }}', '{{ bc }}')"
 			   {{'checked="checked"' if item.ready else ''}}/>
                     %   else:
 		    <button type="button"
@@ -170,7 +170,7 @@
                     %
                     %   if manifest_exists:
 		    <input type="checkbox" class="checkbox"
-		    	   onChange="toggleReady('{{ base_url }}', {{ bc }})"
+		    	   onChange="toggleReady('{{ base_url }}', '{{ bc }}')"
 			   {{'checked="checked"' if item.ready else ''}}/>
                     %   else:
                     <span class="fa-stack fa-2x">
