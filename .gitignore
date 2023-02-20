@@ -55,3 +55,4 @@ data/processing/*-initiated
 data/processing/*-processing
 data/processing/*-problem
 data/thumbnails/*.jpg
+dibs/templates/custom/**
