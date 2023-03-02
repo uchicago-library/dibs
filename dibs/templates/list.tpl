@@ -143,7 +143,7 @@
 		    %     end
 		    <button type="submit" name="try-again"
                            class="btn btn-danger btn-sm"
-			   onClick="processItem(this,{{ bc }},'{{ base_url }}','/try_again')"
+			   onClick="processItem(this,'{{ bc }}','{{ base_url }}','/try_again')"
 			    title="{{ problem_message }}">
 			Try Again
 		    </button>
@@ -159,7 +159,7 @@
 		    <button type="button"
 			    class="btn btn-primary btn-sm"
 			    title="{{ "" if unprocessed_dir_exists else please_copy(bc) }}"
-			    onclick="processItem(this,{{ bc }},'{{ base_url }}','/start-processing')"
+			    onclick="processItem(this,'{{ bc }}','{{ base_url }}','/start-processing')"
 			    {{ "" if unprocessed_dir_exists else "disabled" }}/>
 		    Process
 		    </button>
