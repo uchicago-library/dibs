@@ -450,8 +450,7 @@ def update_item():
                         num_copies = num_copies, duration = duration, notes = notes)
             if 'addAndProcess' in request.POST: # user clicked "add then process" button
                 log(f'user clicked Add & Process')
-                decorate = dibs.post('/start-processing', apply = VerifyStaffUser ())
-                decorate(start_processing())
+                start_processing()
         else:  # The operation is /update/edit.
             if not item:
                 log(f'there is no item with barcode {barcode}')
@@ -582,8 +581,7 @@ def try_again():
             log(f'deleting processing file at: ' + processing_path)
         except FileNotFoundError:
             log('no processing file to delete!')
-        decorate = dibs.post('/start-processing', apply = VerifyStaffUser ())
-        decorate(start_processing())
+        start_processing()
     else:
         log(f'_PROCESS_DIR not set -- ignoring /try_again for {barcode}')
 
