@@ -121,6 +121,21 @@
 		    %   unprocessed_dir_exists = True
 		    % end
 		    %
+		    % mapping = { '✅' : "OK",
+		    % 		'❌' : "X",
+		    % 		'⚠' : "Warning!",
+		    % 		'‼' : "Uh-oh!" ,
+		    % 		'️' : "" }
+		    % 
+		    % def fix_string(str):
+		    % 	output = []
+		    % 	for c in str:
+		    % 	    if c in mapping.keys():
+		    % 		output.append(mapping[c])
+		    % 	    else:
+		    % 		output.append(c)
+		    % 	return ''.join(output)
+		    % 
                     % if process_dir:
                     %   # Explanation of the logic governing the code below:
                     %   # if there's a *-problem file
@@ -135,11 +150,11 @@
                     %   initiated       = exists(join(process_dir, bc + "-initiated"))
                     %   processing      = exists(join(process_dir, bc + "-processing"))
                     %   problem_exists  = exists(join(process_dir, bc + "-problem"))
-                    %
+		    %
                     %   if problem_exists:
 		    %     problem_message = 'There was a problem processing the TIFFs.\n\n'
 		    %     with open(join(process_dir, bc + "-problem")) as file:
-		    %	    problem_message += file.read()
+		    %	    problem_message += fix_string(file.read())
 		    %     end
 		    <button type="submit" name="try-again"
                            class="btn btn-danger btn-sm"
