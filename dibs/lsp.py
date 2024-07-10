@@ -230,7 +230,8 @@ class LSP(LSPInterface):
                 return config(key, section = 'folio')
 
             url           = folio_config('FOLIO_OKAPI_URL')
-            token         = folio_config('FOLIO_OKAPI_TOKEN')
+            token         = get_folio_token()
+            # token         = folio_config('FOLIO_OKAPI_TOKEN')
             tenant_id     = folio_config('FOLIO_OKAPI_TENANT_ID')
             an_prefix     = folio_config('FOLIO_ACCESSION_PREFIX')
             page_template = folio_config('EDS_PAGE_TEMPLATE')
@@ -289,3 +290,25 @@ def truncated_title(title):
         return wrap(modified_title, 60)[0] + ' ...'
     else:
         return modified_title
+
+def get_folio_token():
+
+    def folio_config(key):
+        return config(key, section = 'folio')
+
+    headers = {"Accept": "application/json",
+               "Content-Type": "application/json",
+               "X-Okapi-Tenant": "uchicago", }
+
+    username = folio_config('FOLIO_OKAPI_USERNAME')
+    password = folio_config('FOLIO_OKAPI_PASSWORD')
+    hostname = "https://uchicago-test-okapi.folio.indexdata.com"
+    endpoint = "authn/login-with-expiry"
+
+    json = {"username": username, "password": password}
+    url = "%s/%s" % (hostname, endpoint)
+
+    r = requests.post(url, json=json, headers=headers)
+
+    token = r.cookies.get('folioAccessToken')
+    return token
