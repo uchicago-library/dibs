@@ -17,6 +17,7 @@ from   os.path import join, exists
 import pokapi
 from   pokapi import Folio
 import re
+import requests
 from   sidetrack import log
 from   textwrap import wrap
 from   topi import Tind
