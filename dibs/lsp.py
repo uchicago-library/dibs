@@ -213,6 +213,28 @@ class LSP(LSPInterface):
     '''LSP abstraction class.'''
 
     def __new__(cls, *args, **kwds):
+        def get_folio_token():
+
+            def folio_config(key):
+                return config(key, section = 'folio')
+
+            headers = {"Accept": "application/json",
+                       "Content-Type": "application/json",
+                       "X-Okapi-Tenant": folio_config('FOLIO_OKAPI_TENANT_ID'), }
+
+            username = folio_config('FOLIO_OKAPI_USERNAME')
+            password = folio_config('FOLIO_OKAPI_PASSWORD')
+            url_prefix = folio_config('FOLIO_OKAPI_URL')
+            endpoint = folio_config('FOLIO_OKAPI_ENDPOINT')
+
+            json = {"username": username, "password": password}
+            url = "%s/%s" % (url_prefix, endpoint)
+
+            r = requests.post(url, json=json, headers=headers)
+
+            token = r.cookies.get('folioAccessToken')
+            return token
+
         # This implements a Singleton pattern by storing the object we create
         # and returning the same one if the class constructor is called again.
         lsp = cls.__dict__.get("__lsp_interface__")
@@ -291,25 +313,3 @@ def truncated_title(title):
         return wrap(modified_title, 60)[0] + ' ...'
     else:
         return modified_title
-
-def get_folio_token():
-
-    def folio_config(key):
-        return config(key, section = 'folio')
-
-    headers = {"Accept": "application/json",
-               "Content-Type": "application/json",
-               "X-Okapi-Tenant": "uchicago", }
-
-    username = folio_config('FOLIO_OKAPI_USERNAME')
-    password = folio_config('FOLIO_OKAPI_PASSWORD')
-    hostname = "https://uchicago-test-okapi.folio.indexdata.com"
-    endpoint = "authn/login-with-expiry"
-
-    json = {"username": username, "password": password}
-    url = "%s/%s" % (hostname, endpoint)
-
-    r = requests.post(url, json=json, headers=headers)
-
-    token = r.cookies.get('folioAccessToken')
-    return token
