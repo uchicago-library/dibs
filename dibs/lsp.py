@@ -105,6 +105,7 @@ class TindInterface(LSPInterface):
                     save_thumbnail(thumbnail_file, isbn = rec.isbn_issn)
                 else:
                     log(f"{barcode} lacks ISBN & thumbnail URL => no thumbnail")
+
             else:
                 log(f'thumbnail image already exists in {thumbnail_file}')
             return LSPRecord(item_id   = rec.tind_id,
@@ -165,11 +166,18 @@ class FolioInterface(LSPInterface):
         thumbnail_file = join(self._thumbnails_dir, barcode + '.jpg')
         if not exists(thumbnail_file):
             if rec.isbn_issn:
-                try:
-                    save_thumbnail(thumbnail_file, isbn = rec.isbn_issn)
-                except Exception as ex:  # noqa PIE786
-                    # Log it and go on; don't fail just because of this.
-                    log(f'failed to save thumbnail for {barcode}: ' + str(ex))
+                log(f'failed to save thumbnail for {barcode}')
+
+                # MT 10/14/24: commenting this out because of the
+                # openlibrary.org outage; please put it back once the
+                # site is back
+
+                # try:
+                #     save_thumbnail(thumbnail_file, isbn = rec.isbn_issn)
+                # except Exception as ex:  # noqa PIE786
+                #     # Log it and go on; don't fail just because of this.
+                #     log(f'failed to save thumbnail for {barcode}: ' + str(ex))
+
             else:
                 log(f"{rec.id} has no ISBN/ISSN => can't get a thumbnail")
         else:
@@ -231,16 +239,11 @@ class LSP(LSPInterface):
             url = "%s/%s" % (url_prefix, endpoint)
 
             r = requests.post(url, json=json, headers=headers)
-
             token = r.cookies.get('folioAccessToken')
-            return token
 
-        # This implements a Singleton pattern by storing the object we create
-        # and returning the same one if the class constructor is called again.
-        lsp = cls.__dict__.get("__lsp_interface__")
-        if lsp is not None:
-            log(f'Using previously-created LSP object {str(cls)}')
-            return lsp
+            log(f'<MT> API token: {token}')
+
+            return token
 
         # Read common configuration variables.
         thumbnails_dir = resolved_path(config('THUMBNAILS_DIR', section = 'dibs'))
@@ -254,7 +257,6 @@ class LSP(LSPInterface):
 
             url           = folio_config('FOLIO_OKAPI_URL')
             token         = get_folio_token()
-            # token         = folio_config('FOLIO_OKAPI_TOKEN')
             tenant_id     = folio_config('FOLIO_OKAPI_TENANT_ID')
             an_prefix     = folio_config('FOLIO_ACCESSION_PREFIX')
             page_template = folio_config('EDS_PAGE_TEMPLATE')
@@ -265,6 +267,7 @@ class LSP(LSPInterface):
                                  an_prefix = an_prefix,
                                  page_template = page_template,
                                  thumbnails_dir = thumbnails_dir)
+
         elif lsp_type == 'tind':
             url = config('TIND_SERVER_URL', section = 'tind')
             log(f'Using TIND URL {url}')
@@ -272,8 +275,6 @@ class LSP(LSPInterface):
         else:
             lsp = UnconfiguredInterface()
 
-        # Store the interface object (to implement the Singleton pattern).
-        cls.__lsp_interface__ = lsp
         return lsp
 
 
